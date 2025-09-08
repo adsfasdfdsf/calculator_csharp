@@ -43,7 +43,6 @@ namespace CalculatorApp
             */
             var output = new List<string>();
             var stack = new Stack<string>();
-
             throw new NotImplementedException("implement me");
         }
 
