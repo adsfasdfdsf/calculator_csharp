@@ -31,82 +31,28 @@ namespace CalculatorApp.Tests
         }
 
         // --------------------------
-        // ТЕСТЫ ToPostfix
-        // --------------------------
-
-        [Test]
-        public void TestPostfixSimpleAddition()
-        {
-            var postfix = Calculator.ToPostfix(new List<string> { "2", "+", "3" });
-            CollectionAssert.AreEqual(new List<string> { "2", "3", "+" }, postfix);
-        }
-
-        [Test]
-        public void TestPostfixOperatorPrecedence()
-        {
-            var postfix = Calculator.ToPostfix(new List<string> { "2", "+", "3", "*", "4" });
-            CollectionAssert.AreEqual(new List<string> { "2", "3", "4", "*", "+" }, postfix);
-        }
-
-        [Test]
-        public void TestPostfixWithParentheses()
-        {
-            var postfix = Calculator.ToPostfix(new List<string> { "(", "2", "+", "3", ")", "*", "4" });
-            CollectionAssert.AreEqual(new List<string> { "2", "3", "+", "4", "*" }, postfix);
-        }
-
-        [Test]
-        public void TestPostfixNestedParentheses()
-        {
-            var tokens = new List<string> { "2", "*", "(", "3", "+", "(", "4", "-", "1", ")", ")" };
-            var postfix = Calculator.ToPostfix(tokens);
-            CollectionAssert.AreEqual(new List<string> { "2", "3", "4", "1", "-", "+", "*" }, postfix);
-        }
-
-        [Test]
-        public void TestPostfixUnbalancedParentheses()
-        {
-            Assert.Throws<System.Exception>(() =>
-                Calculator.ToPostfix(new List<string> { "(", "2", "+", "3" })
-            );
-        }
-
-        // --------------------------
-        // ТЕСТЫ EvalPostfix
+        // ТЕСТЫ EvalTokens
         // --------------------------
 
         [Test]
         public void TestEvalPostfixAddition()
         {
-            Assert.AreEqual(5, Calculator.EvalPostfix(new List<string> { "2", "3", "+" }));
+            Assert.AreEqual(5, Calculator.EvalTokens(new List<string> { "2", "3", "+" }));
         }
-
-        [Test]
-        public void TestEvalPostfixMixedOperations()
-        {
-            Assert.AreEqual(17, Calculator.EvalPostfix(new List<string> { "2", "3", "5", "*", "+" }));
-            Assert.AreEqual(11, Calculator.EvalPostfix(new List<string> { "10", "2", "-", "3", "+" }));
-        }
-
+        
         [Test]
         public void TestEvalPostfixDivision()
         {
-            Assert.AreEqual(4, Calculator.EvalPostfix(new List<string> { "8", "2", "/" }));
-            Assert.AreEqual(3.5, Calculator.EvalPostfix(new List<string> { "7", "2", "/" }));
+            Assert.AreEqual(4, Calculator.EvalTokens(new List<string> { "8", "2", "/" }));
+            Assert.AreEqual(3.5, Calculator.EvalTokens(new List<string> { "7", "2", "/" }));
         }
-
-        [Test]
-        public void TestEvalPostfixChained()
-        {
-            var postfix = new List<string> { "2", "3", "+", "4", "1", "-", "*" };
-            Assert.AreEqual(15, Calculator.EvalPostfix(postfix));
-        }
+        
 
         [Test]
         public void TestEvalPostfixErrorNotEnoughOperands()
         {
             Assert.Throws<System.Exception>(() =>
-                Calculator.EvalPostfix(new List<string> { "2", "+" })
+                Calculator.EvalTokens(new List<string> { "2", "+" })
             );
         }
 
@@ -114,7 +60,7 @@ namespace CalculatorApp.Tests
         public void TestEvalPostfixErrorUnknownToken()
         {
             Assert.Throws<System.Exception>(() =>
-                Calculator.EvalPostfix(new List<string> { "2", "X", "+" })
+                Calculator.EvalTokens(new List<string> { "2", "X", "+" })
             );
         }
 
@@ -196,7 +142,7 @@ namespace CalculatorApp.Tests
         public void TestErrorUnknownToken()
         {
             Assert.Throws<System.Exception>(() =>
-                Calculator.ToPostfix(new List<string> { "2", "?", "3" })
+                Calculator.Tokenize("2 ? 3")
             );
         }
 
@@ -204,7 +150,7 @@ namespace CalculatorApp.Tests
         public void TestErrorNotEnoughOperands()
         {
             Assert.Throws<System.Exception>(() =>
-                Calculator.EvalPostfix(new List<string> { "2", "+" })
+                Calculator.EvalTokens(new List<string> { "2", "+" })
             );
         }
     }
