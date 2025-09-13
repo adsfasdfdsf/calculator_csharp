@@ -23,6 +23,10 @@ namespace CalculatorApp
             var isNumber = false;
             for (var i = 0; i < expression.Length; i++)
             {
+                if (expression[i] == ' ')
+                {
+                    continue;
+                }
                 if (expression[i] == '+' || expression[i] == '-' || expression[i] == '*' || expression[i] == '/' 
                     || expression[i] == '(' || expression[i] == ')')
                 {
@@ -40,6 +44,10 @@ namespace CalculatorApp
                 {
                     currentToken += expression[i];
                     isNumber = true;
+                }
+                else
+                {
+                    throw new Exception("Invalid character in expression");
                 }
             }
 
@@ -60,6 +68,7 @@ namespace CalculatorApp
             value.Add("-", 1);
             value.Add("*", 2);
             value.Add("/", 2);
+            var preth = 0;
             var operators = new Stack<string>();
             var numbers = new Stack<double>();
             
@@ -82,6 +91,10 @@ namespace CalculatorApp
                     while (operators.Count > 0 && operators.Peek() != "(" && value[operators.Peek()] >= value[token])
                     {
                         var arg1 = numbers.Pop();
+                        if (numbers.Count == 0 || operators.Count == 0)
+                        {
+                            throw new Exception("not enough operands");
+                        }
                         var arg2 = numbers.Pop();
                         var operand = operators.Pop();
                         var res = ApplyOperator(operand, arg1, arg2);
@@ -93,13 +106,19 @@ namespace CalculatorApp
                 else if (token == "(")
                 {
                     operators.Push(token);
+                    preth++;
                 }
                 else
                 if (token == ")")
                 {
+                    preth--;
                     while (operators.Count > 0 && operators.Peek() != "(")
                     {
                         var arg1 = numbers.Pop();
+                        if (numbers.Count == 0 || operators.Count == 0)
+                        {
+                            throw new Exception("not enough operands");
+                        }
                         var arg2 = numbers.Pop();
                         var operand = operators.Pop();
                         var res = ApplyOperator(operand, arg1, arg2);
@@ -119,12 +138,20 @@ namespace CalculatorApp
             while (operators.Count > 0)
             {
                 var arg1 = numbers.Pop();
+                if (numbers.Count == 0 || operators.Count == 0)
+                {
+                    throw new Exception("not enough operands");
+                }
                 var arg2 = numbers.Pop();
                 var operand = operators.Pop();
                 var res = ApplyOperator(operand, arg1, arg2);
                 numbers.Push(res);
             }
 
+            if (preth != 0)
+            {
+                throw new Exception("( or ) not closed");
+            }
             return numbers.Pop();
         }
     }

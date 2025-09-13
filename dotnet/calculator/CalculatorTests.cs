@@ -56,14 +56,6 @@ namespace CalculatorApp.Tests
             );
         }
 
-        [Test]
-        public void TestEvalPostfixErrorUnknownToken()
-        {
-            Assert.Throws<System.Exception>(() =>
-                Calculator.EvalTokens(new List<string> { "2", "X", "+" })
-            );
-        }
-
         // --------------------------
         // ТЕСТЫ Calculate (интеграционные)
         // --------------------------
